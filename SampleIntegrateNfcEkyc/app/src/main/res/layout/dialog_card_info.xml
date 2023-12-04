@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   xmlns:app="http://schemas.android.com/apk/res-auto"
+   android:layout_width="match_parent"
+   android:layout_height="match_parent"
+   android:orientation="vertical">
+
+   <com.google.android.material.textfield.TextInputLayout
+      android:id="@+id/card_id_input"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginHorizontal="16dp"
+      android:layout_marginVertical="4dp"
+      android:hint="Nhập số ID">
+
+      <com.google.android.material.textfield.TextInputEditText
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:inputType="number"
+         android:maxLength="12" />
+
+   </com.google.android.material.textfield.TextInputLayout>
+
+   <com.google.android.material.textfield.TextInputLayout
+      android:id="@+id/card_dob_input"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginHorizontal="16dp"
+      android:layout_marginVertical="4dp"
+      android:hint="Nhập ngày sinh"
+      app:helperText="* Định dạng: yyMMdd, vd: 950614">
+
+      <com.google.android.material.textfield.TextInputEditText
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:inputType="number"
+         android:maxLength="6" />
+
+   </com.google.android.material.textfield.TextInputLayout>
+
+   <com.google.android.material.textfield.TextInputLayout
+      android:id="@+id/card_expired_date_input"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginHorizontal="16dp"
+      android:layout_marginVertical="4dp"
+      android:hint="Nhập ngày hết hạn"
+      app:helperText="* Định dạng: yyMMdd, vd: 950614">
+
+      <com.google.android.material.textfield.TextInputEditText
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:inputType="number"
+         android:maxLength="6" />
+
+   </com.google.android.material.textfield.TextInputLayout>
+
+</LinearLayout>
