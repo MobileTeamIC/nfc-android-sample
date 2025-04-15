@@ -19,3 +19,4 @@ dependencyResolutionManagement {
 rootProject.name = "SampleIntegrateNfcEkyc"
 include ':app'
 include ':nfc'
+include ':scanqr'
