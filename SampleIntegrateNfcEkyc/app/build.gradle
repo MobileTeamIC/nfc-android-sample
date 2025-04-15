@@ -51,7 +51,7 @@ dependencies {
     implementation 'org.bouncycastle:bcpkix-jdk15on:1.67'
 
     implementation 'commons-io:commons-io:2.6'
-    implementation 'com.github.mhshams:jnbis:2.0.2'
+//    implementation 'com.github.mhshams:jnbis:2.0.2'
     implementation 'com.airbnb.android:lottie:6.0.1'
     implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
     implementation "android.arch.lifecycle:extensions:1.1.1"
