@@ -51,6 +51,18 @@
             android:layout_height="8dp" />
 
          <Button
+            android:id="@+id/scan_mrz_nfc"
+            style="@style/Widget.Material3.Button.ElevatedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:text="Thực hiện Quét MRZ => Đọc chip NFC" />
+
+         <Space
+            android:layout_width="match_parent"
+            android:layout_height="8dp" />
+
+         <Button
             android:id="@+id/scan_nfc"
             style="@style/Widget.Material3.Button.ElevatedButton"
             android:layout_width="match_parent"

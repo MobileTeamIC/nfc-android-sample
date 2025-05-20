@@ -13,7 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
-nfc
-scanqr
+nfc/vnpt_nfc_sdk-release-*.aar
+scanqr/scanqr_ic_sdk-release-*.aar
 
 

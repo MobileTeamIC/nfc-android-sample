@@ -22,6 +22,13 @@ import com.vnptit.nfc.utils.SDKEnumNFC
 class MainActivity : AppCompatActivity() {
 
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
+    private lateinit var domain: String
+    private lateinit var access_token: String
+    private lateinit var token_id: String
+    private lateinit var token_key: String
+    private lateinit var access_token_ekyc: String
+    private lateinit var token_id_ekyc: String
+    private lateinit var token_key_ekyc: String
 
     companion object {
         const val EXTRA_LOG_RESULT = "extra:LOG_RESULT"
@@ -34,6 +41,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val rootView = findViewById<CoordinatorLayout>(R.id.coordinator)
+        domain = ""
+        access_token = "<ACCESS_TOKEN> (including bearer)"
+        token_id = "<TOKEN_ID>"
+        token_key = "<TOKEN_KEY>"
+        access_token_ekyc = "<ACCESS_TOKEN_EKYC> (including bearer)"
+        token_id_ekyc = "TOKEN_ID_EKYC"
+        token_key_ekyc = "TOKEN_KEY_EKYC"
 
         resultLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -124,9 +138,14 @@ class MainActivity : AppCompatActivity() {
             if (!isDeviceSupportedNfc(rootView)) {
                 return@setOnClickListener
             }
-
             navigateToNfcQrCode()
         }
+         findViewById<Button>(R.id.scan_mrz_nfc).setOnClickListener {
+               if (!isDeviceSupportedNfc(rootView)) {
+                  return@setOnClickListener
+               }
+               navigateToMrzNfc()
+         }
 
         findViewById<Button>(R.id.scan_nfc).setOnClickListener {
             if (!isDeviceSupportedNfc(rootView)) {
@@ -179,30 +198,30 @@ class MainActivity : AppCompatActivity() {
             /**
              * Truyền access token chứa bearer
              */
-            it.putExtra(KeyIntentConstantsNFC.ACCESS_TOKEN, "<ACCESS_TOKEN> (including bearer)")
+            it.putExtra(KeyIntentConstantsNFC.ACCESS_TOKEN, access_token)
             /**
              * Truyền token id
              */
-            it.putExtra(KeyIntentConstantsNFC.TOKEN_ID, "<TOKEN_ID>")
+            it.putExtra(KeyIntentConstantsNFC.TOKEN_ID, token_id)
             /**
              * Truyền token key
              */
-            it.putExtra(KeyIntentConstantsNFC.TOKEN_KEY, "<TOKEN_KEY>")
+            it.putExtra(KeyIntentConstantsNFC.TOKEN_KEY, token_key)
 
             /**
              * Truyền access token ekyc cho dịch vụ postcode
              */
-            intent.putExtra(KeyIntentConstantsNFC.ACCESS_TOKEN_EKYC, "<ACCESS_TOKEN> (including bearer)")
+            it.putExtra(KeyIntentConstantsNFC.ACCESS_TOKEN_EKYC, access_token_ekyc)
 
             /**
              * Truyền token id ekyc cho dịch vụ postcode
              */
-            intent.putExtra(KeyIntentConstantsNFC.TOKEN_ID_EKYC, "TOKEN_ID_EKYC")
+            it.putExtra(KeyIntentConstantsNFC.TOKEN_ID_EKYC, token_id_ekyc)
 
             /**
              * Truyền token key ekyc cho dịch vụ postcode
              */
-            intent.putExtra(KeyIntentConstantsNFC.TOKEN_KEY_EKYC, "TOKEN_KEY_EKYC")
+            it.putExtra(KeyIntentConstantsNFC.TOKEN_KEY_EKYC, token_key_ekyc)
             /**
              * điều chỉnh ngôn ngữ tiếng việt
              *    - vi: tiếng việt
@@ -210,19 +229,12 @@ class MainActivity : AppCompatActivity() {
              */
             it.putExtra(KeyIntentConstantsNFC.LANGUAGE_SDK, SDKEnumNFC.LanguageEnum.VIETNAMESE.value)
             /**
-             * hiển thị màn hình hướng dẫn + hiển thị nút bỏ qua hướng dẫn
-             * - mặc định luôn luôn hiển thị màn hình hướng dẫn
-             *    - true: hiển thị nút bỏ qua
-             *    - false: ko hiển thị nút bỏ qua
-             */
-
-            /**
              * hiển thị màn hình hướng dẫn
              * - mặc định luôn luôn hiển thị màn hình hướng dẫn
              *    - true: hiển thị màn hướng dẫn
              *    - false: ko hiển thị màn hướng dẫn
              */
-            intent.putExtra(KeyIntentConstantsNFC.IS_SHOW_TUTORIAL, true)
+            it.putExtra(KeyIntentConstantsNFC.IS_SHOW_TUTORIAL, true)
 
             /**
              * hiển thị nút bỏ qua hướng dẫn
@@ -248,7 +260,7 @@ class MainActivity : AppCompatActivity() {
              *    - true: bật tính năng
              *    - false: tắt tính năng
              */
-            it.putExtra(KeyIntentConstantsNFC.IS_ENABLE_CHECK_CHIP_CLONE, true)
+//            it.putExtra(KeyIntentConstantsNFC.IS_ENABLE_CHECK_CHIP_CLONE, true)
             /**
              * truyền các giá trị đọc thẻ
              *    - nếu không truyền gì mặc định sẽ đọc tất cả (MRZ,Verify Document,Image Avatar)
@@ -257,48 +269,107 @@ class MainActivity : AppCompatActivity() {
              * eg: chỉ đọc thông tin MRZ
              *    intArrayOf(SDKEnumNFC.ReadingNFCTags.MRZInfo.value)
              */
-            it.putExtra(
-                KeyIntentConstantsNFC.READING_TAGS_NFC,
-                intArrayOf(
-                    SDKEnumNFC.ReadingNFCTags.MRZInfo.value,
-                    SDKEnumNFC.ReadingNFCTags.VerifyDocumentInfo.value,
-                    SDKEnumNFC.ReadingNFCTags.ImageAvatarInfo.value,
-                    SDKEnumNFC.ReadingNFCTags.AuthenticationInfo.value,
-                )
-            )
-            /**
-             * truyền giá trị bật quét QRCode
-             *    - true: tắt quét QRCode
-             *    - false: bật quét QRCode
-             */
-//         it.putExtra(KeyIntentConstantsNFC.IS_TURN_OFF_QR_CODE, false)
-
+//            it.putExtra(
+//                KeyIntentConstantsNFC.READING_TAGS_NFC,
+//                intArrayOf(
+//                    SDKEnumNFC.ReadingNFCTags.MRZInfo.value,
+//                    SDKEnumNFC.ReadingNFCTags.VerifyDocumentInfo.value,
+//                    SDKEnumNFC.ReadingNFCTags.ImageAvatarInfo.value,
+//                    SDKEnumNFC.ReadingNFCTags.AuthenticationInfo.value,
+//                )
+//            )
             /**
              * truyền giá trị bật quét read card mode
              * - [SDKEnumNFC.ReaderCardMode.QRCODE.getValue]: quét QR code -> scan NFC
              * - [SDKEnumNFC.ReaderCardMode.MRZ_CODE.getValue]: quét MRZ -> scan NFC
              * - [SDKEnumNFC.ReaderCardMode.NONE.getValue]: scan NFC
              */
-            intent.putExtra(KeyIntentConstantsNFC.READER_CARD_MODE, SDKEnumNFC.ReaderCardMode.QRCODE.value)
+            it.putExtra(KeyIntentConstantsNFC.READER_CARD_MODE, SDKEnumNFC.ReaderCardMode.QRCODE.value)
             // set baseDomain="" => sử dụng mặc định là Product
-            it.putExtra(KeyIntentConstantsNFC.BASE_URL, "https://api.idg.vnpt.vn")
+            it.putExtra(KeyIntentConstantsNFC.BASE_URL, domain)
             // truyền giá trị challange code
-            intent.putExtra(KeyIntentConstantsNFC.CHALLENGE_CODE, "INNOVATIONCENTER")
+//            intent.putExtra(KeyIntentConstantsNFC.CHALLENGE_CODE, "INNOVATIONCENTER")
+
+//            /**
+//             * Upload thông tin NFC
+//             */
+//            intent.putExtra(KeyIntentConstantsNFC.TRANSACTION_PARTNER_ID_UPLOAD_NFC, "UPLOAD_NFC")
+//
+//            /**
+//             * Truyền giá trị địa chỉ thường trú
+//             */
+//            intent.putExtra(KeyIntentConstantsNFC.TRANSACTION_PARTNER_ID_ORIGINAL_LOCATION, "ORIGINAL_LOCATION")
+//
+//            /**
+//             * Truyền giá trị địa chỉ tạm trú
+//             */
+//            intent.putExtra(KeyIntentConstantsNFC.TRANSACTION_PARTNER_ID_RECENT_LOCATION, "RECENT_LOCATION")
+
+            intent.putExtra(KeyIntentConstantsNFC.IS_SHOW_LOGO, true)
+
+            resultLauncher.launch(it)
+        }
+    }
+
+    private fun navigateToMrzNfc() {
+        Intent(this, VnptScanNFCActivity::class.java).also {
+            /**
+             * Truyền access token chứa bearer
+             */
+            it.putExtra(KeyIntentConstantsNFC.ACCESS_TOKEN, access_token)
+            /**
+             * Truyền token id
+             */
+            it.putExtra(KeyIntentConstantsNFC.TOKEN_ID, token_id)
+            /**
+             * Truyền token key
+             */
+            it.putExtra(KeyIntentConstantsNFC.TOKEN_KEY, token_key)
+            /**
+             * Truyền access token ekyc cho dịch vụ postcode
+             */
+            it.putExtra(KeyIntentConstantsNFC.ACCESS_TOKEN_EKYC, access_token_ekyc)
 
             /**
-             * Upload thông tin NFC
+             * Truyền token id ekyc cho dịch vụ postcode
              */
-            intent.putExtra(KeyIntentConstantsNFC.TRANSACTION_PARTNER_ID_UPLOAD_NFC, "UPLOAD_NFC")
+            it.putExtra(KeyIntentConstantsNFC.TOKEN_ID_EKYC, token_id_ekyc)
 
             /**
-             * Truyền giá trị địa chỉ thường trú
+             * Truyền token key ekyc cho dịch vụ postcode
              */
-            intent.putExtra(KeyIntentConstantsNFC.TRANSACTION_PARTNER_ID_ORIGINAL_LOCATION, "ORIGINAL_LOCATION")
-
+            it.putExtra(KeyIntentConstantsNFC.TOKEN_KEY_EKYC, token_key_ekyc)
             /**
-             * Truyền giá trị địa chỉ tạm trú
+             * điều chỉnh ngôn ngữ tiếng việt
+             *    - vi: tiếng việt
+             *    - en: tiếng anh
              */
-            intent.putExtra(KeyIntentConstantsNFC.TRANSACTION_PARTNER_ID_RECENT_LOCATION, "RECENT_LOCATION")
+            it.putExtra(KeyIntentConstantsNFC.LANGUAGE_SDK, SDKEnumNFC.LanguageEnum.VIETNAMESE.value)
+            /**
+             * hiển thị màn hình hướng dẫn + hiển thị nút bỏ qua hướng dẫn
+             * - mặc định luôn luôn hiển thị màn hình hướng dẫn
+             *    - true: hiển thị nút bỏ qua
+             *    - false: ko hiển thị nút bỏ qua
+             */
+            it.putExtra(KeyIntentConstantsNFC.IS_ENABLE_GOT_IT, true)
+            /**
+             * bật tính năng upload ảnh
+             *    - true: bật tính năng
+             *    - false: tắt tính năng
+             */
+            it.putExtra(KeyIntentConstantsNFC.IS_ENABLE_UPLOAD_IMAGE, true)
+            /**
+             * bật tính năng get Postcode
+             *    - true: bật tính năng
+             *    - false: tắt tính năng
+             */
+            it.putExtra(KeyIntentConstantsNFC.IS_ENABLE_POSTCODE_MATCHING, true)
+
+            it.putExtra(KeyIntentConstantsNFC.READER_CARD_MODE, SDKEnumNFC.ReaderCardMode.MRZ_CODE.value)
+
+            it.putExtra(KeyIntentConstantsNFC.BASE_URL, domain)
+
+            it.putExtra(KeyIntentConstantsNFC.IS_SHOW_LOGO, true)
 
             resultLauncher.launch(it)
         }
@@ -306,34 +377,33 @@ class MainActivity : AppCompatActivity() {
 
     private fun navigateToScanNfc(id: String, dob: String, expiredDate: String) {
         Intent(this, VnptScanNFCActivity::class.java).also {
-            intent.putExtra(KeyIntentConstantsNFC.IS_ENABLE_WATERMARK, true)
-            intent.putExtra(KeyIntentConstantsNFC.URL_UPLOAD_DATA_NFC, "/ai/v4/nfc")
+//            intent.putExtra(KeyIntentConstantsNFC.URL_UPLOAD_DATA_NFC, "/ai/v1/nfc")
             /**
              * Truyền access token chứa bearer
              */
-            it.putExtra(KeyIntentConstantsNFC.ACCESS_TOKEN, "<ACCESS_TOKEN> (including bearer)")
+            it.putExtra(KeyIntentConstantsNFC.ACCESS_TOKEN, access_token)
             /**
              * Truyền token id
              */
-            it.putExtra(KeyIntentConstantsNFC.TOKEN_ID, "<TOKEN_ID>")
+            it.putExtra(KeyIntentConstantsNFC.TOKEN_ID, token_id)
             /**
              * Truyền token key
              */
-            it.putExtra(KeyIntentConstantsNFC.TOKEN_KEY, "<TOKEN_KEY>")
+            it.putExtra(KeyIntentConstantsNFC.TOKEN_KEY, token_key)
             /**
                 * Truyền access token ekyc cho dịch vụ postcode
             */
-            intent.putExtra(KeyIntentConstantsNFC.ACCESS_TOKEN_EKYC, "<ACCESS_TOKEN> (including bearer)")
+            it.putExtra(KeyIntentConstantsNFC.ACCESS_TOKEN_EKYC, access_token_ekyc)
 
             /**
                 * Truyền token id ekyc cho dịch vụ postcode
             */
-            intent.putExtra(KeyIntentConstantsNFC.TOKEN_ID_EKYC, "TOKEN_ID_EKYC")
+            it.putExtra(KeyIntentConstantsNFC.TOKEN_ID_EKYC, token_id_ekyc)
 
             /**
                 * Truyền token key ekyc cho dịch vụ postcode
             */
-            intent.putExtra(KeyIntentConstantsNFC.TOKEN_KEY_EKYC, "TOKEN_KEY_EKYC")
+            it.putExtra(KeyIntentConstantsNFC.TOKEN_KEY_EKYC, token_key_ekyc)
             /**
              * điều chỉnh ngôn ngữ tiếng việt
              *    - vi: tiếng việt
@@ -364,7 +434,7 @@ class MainActivity : AppCompatActivity() {
              *    - true: bật tính năng
              *    - false: tắt tính năng
              */
-            it.putExtra(KeyIntentConstantsNFC.IS_ENABLE_CHECK_CHIP_CLONE, true)
+//            it.putExtra(KeyIntentConstantsNFC.IS_ENABLE_CHECK_CHIP_CLONE, true)
             /**
              * truyền các giá trị đọc thẻ
              *    - nếu không truyền gì mặc định sẽ đọc tất cả (MRZ,Verify Document,Image Avatar)
@@ -373,15 +443,15 @@ class MainActivity : AppCompatActivity() {
              * eg: chỉ đọc thông tin MRZ
              *    intArrayOf(SDKEnumNFC.ReadingNFCTags.MRZInfo.value)
              */
-            it.putExtra(
-                KeyIntentConstantsNFC.READING_TAGS_NFC,
-                intArrayOf(
-                    SDKEnumNFC.ReadingNFCTags.MRZInfo.value,
-                    SDKEnumNFC.ReadingNFCTags.VerifyDocumentInfo.value,
-                    SDKEnumNFC.ReadingNFCTags.ImageAvatarInfo.value,
-                    SDKEnumNFC.ReadingNFCTags.AuthenticationInfo.value,
-                )
-            )
+//            it.putExtra(
+//                KeyIntentConstantsNFC.READING_TAGS_NFC,
+//                intArrayOf(
+//                    SDKEnumNFC.ReadingNFCTags.MRZInfo.value,
+//                    SDKEnumNFC.ReadingNFCTags.VerifyDocumentInfo.value,
+//                    SDKEnumNFC.ReadingNFCTags.ImageAvatarInfo.value,
+//                    SDKEnumNFC.ReadingNFCTags.AuthenticationInfo.value,
+//                )
+//            )
             /**
              * truyền giá trị bật quét QRCode
              *    - true: tắt quét QRCode
@@ -395,40 +465,43 @@ class MainActivity : AppCompatActivity() {
              * - [SDKEnumNFC.ReaderCardMode.MRZ_CODE.getValue]: quét MRZ -> scan NFC
              * - [SDKEnumNFC.ReaderCardMode.NONE.getValue]: scan NFC
              */
-            intent.putExtra(KeyIntentConstantsNFC.READER_CARD_MODE, SDKEnumNFC.ReaderCardMode.NONE.value)
+            it.putExtra(KeyIntentConstantsNFC.READER_CARD_MODE, SDKEnumNFC.ReaderCardMode.NONE.value)
             // set baseDomain="" => sử dụng mặc định là Product
-            it.putExtra(KeyIntentConstantsNFC.BASE_URL, "")
+            it.putExtra(KeyIntentConstantsNFC.BASE_URL, domain)
             // truyền id định danh căn cước công dân
             it.putExtra(KeyIntentConstantsNFC.ID_NUMBER_CARD, id)
             // truyền ngày sinh ghi trên căn cước công dân
             it.putExtra(KeyIntentConstantsNFC.BIRTHDAY_CARD, dob)
             // truyền ngày hết hạn căn cước công dân
             it.putExtra(KeyIntentConstantsNFC.EXPIRED_DATE_CARD, expiredDate)
+//
+//
+//            // truyền giá trị challange code
+//            intent.putExtra(
+//                KeyIntentConstantsNFC.CHALLENGE_CODE, "INNOVATIONCENTER"
+//            )
+//            /**
+//             * Base url để upload thông tin
+//             */
+//            it.putExtra(KeyIntentConstantsNFC.BASE_URL, "https://api.idg.vnpt.vn")
+//
+//            /**
+//             * Upload thông tin NFC
+//             */
+//            intent.putExtra(KeyIntentConstantsNFC.TRANSACTION_PARTNER_ID_UPLOAD_NFC, "UPLOAD_NFC")
+//
+//            /**
+//             * Truyền giá trị địa chỉ thường trú
+//             */
+//            intent.putExtra(KeyIntentConstantsNFC.TRANSACTION_PARTNER_ID_ORIGINAL_LOCATION, "ORIGINAL_LOCATION")
+//
+//            /**
+//             * Truyền giá trị địa chỉ tạm trú
+//             */
+//            intent.putExtra(KeyIntentConstantsNFC.TRANSACTION_PARTNER_ID_RECENT_LOCATION, "RECENT_LOCATION")
 
+            intent.putExtra(KeyIntentConstantsNFC.IS_SHOW_LOGO, true)
 
-            // truyền giá trị challange code
-            intent.putExtra(
-                KeyIntentConstantsNFC.CHALLENGE_CODE, "INNOVATIONCENTER"
-            )
-            /**
-             * Base url để upload thông tin
-             */
-            it.putExtra(KeyIntentConstantsNFC.BASE_URL, "https://api.idg.vnpt.vn")
-
-            /**
-             * Upload thông tin NFC
-             */
-            intent.putExtra(KeyIntentConstantsNFC.TRANSACTION_PARTNER_ID_UPLOAD_NFC, "UPLOAD_NFC")
-
-            /**
-             * Truyền giá trị địa chỉ thường trú
-             */
-            intent.putExtra(KeyIntentConstantsNFC.TRANSACTION_PARTNER_ID_ORIGINAL_LOCATION, "ORIGINAL_LOCATION")
-
-            /**
-             * Truyền giá trị địa chỉ tạm trú
-             */
-            intent.putExtra(KeyIntentConstantsNFC.TRANSACTION_PARTNER_ID_RECENT_LOCATION, "RECENT_LOCATION")
 
             resultLauncher.launch(it)
         }
